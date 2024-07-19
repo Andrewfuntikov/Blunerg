@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список книг</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Подставьте имя вашего CSS файла -->
+</head>
+<body>
+    <h1>Список книг</h1>
+
+    <form method="GET">
+        <label for="year">Год публикации:</label>
+        <select name="year" id="year" multiple>
+            {% for year in years %}
+                <option value="{{ year.year_published }}">{{ year.year_published }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="genre">Жанр:</label>
+        <select name="genre" id="genre" multiple>
+            {% for genre in genres %}
+                <option value="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Фильтровать</button>
+    </form>
+
+    <div class="book-list">
+        {% for book in book_list %}
+            <div class="book-item">
+                <a href="{{ book.get_absolute_url }}">
+                    <img src="{{ book.image.url }}" alt="{{ book.title }}">
+                    <h2>{{ book.title }}</h2>
+                    <p>{{ book.tagline }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Подставьте имя вашего CSS файла -->
+</head>
+<body>
+    <h1>{{ book.title }}</h1>
+    <img src="{{ book.image.url }}" alt="{{ book.title }}">
+    <p>{{ book.tagline }}</p>
+    <p>{{ book.description }}</p>
+
+    <h2>Рейтинг:</h2>
+    <div class="rating">
+        {% for star in book.rating.all %}
+            {% if star.star_id <= book.get_average_rating %}
+                <i class="fas fa-star"></i>
+            {% else %}
+                <i class="far fa-star"></i>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <form method="POST" action="{% url 'add_star_rating' book.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="movie" value="{{ book.id }}">
+        <label for="star">Ваш рейтинг:</label>
+        <select name="star" id="star">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <button type="submit">Отправить</button>
+    </form>
+
+    <h2>Отзывы:</h2>
+    <div class="comments">
+        {% for review in book.reviews.all %}
+            <div class="comment-item">
+                <p>{{ review.text }}</p>
+                <p class="comment-author">{{ review.author }}</p>
+                {% if review.parent %}
+                    <p class="reply-to">Ответ на комментарий {{ review.parent }}</p>
+                {% endif %}
+                <a href="{% url 'add_review' book.id %}?parent={{ review.id }}">Ответить</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" action="{% url 'add_review' book.id %}">
+        {% csrf_token %}
+        <label for="text">Добавить отзыв:</label>
+        <textarea name="text" id="text" cols="30" rows="10"></textarea>
+        <label for="author">Имя автора:</label>
+        <input type="text" name="author" id="author">
+        <button type="submit">Отправить</button>
+    </form>
+
+</body>
+</html>
