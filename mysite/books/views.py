@@ -27,23 +27,10 @@ types = {
 
 def index(request):
     zodiacs = list(zodiac_dict)
-    """
-    <ol>
-        <li>aries</li>
-        <li>taurus</li>
-        <li>gemini</li>
-    </ol>
-    """
-    li_elements = ""
-    for sign in zodiacs:
-        redirect_path = reverse("horoscope-name", args=[sign])
-        li_elements += f"<li> <a href='{redirect_path}'>{sign.title()} </a> </li>"
-    response = f"""
-    <ul>
-        {li_elements}
-    </ul>
-    """
-    return HttpResponse(response)
+    context = {
+        'zodiacs': zodiacs
+    }
+    return render(request, 'books/index.html', context=context)
 
 
 def get_info_about_sign_zodiac(requests, sign_zodiac: str):
